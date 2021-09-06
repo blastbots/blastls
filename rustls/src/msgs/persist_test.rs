@@ -1,6 +1,5 @@
 use super::codec::{Codec, Reader};
 use super::enums::*;
-use super::handshake::*;
 use super::persist::*;
 
 use crate::key::Certificate;
@@ -25,15 +24,18 @@ fn clientsessionkey_cannot_be_read() {
 
 #[test]
 fn clientsessionvalue_is_debug() {
-    let csv = ClientSessionValueWithResolvedCipherSuite::new(
-        ProtocolVersion::TLSv1_3,
-        TLS13_AES_128_GCM_SHA256,
-        &SessionID::random().unwrap(),
+    let csv = ClientSessionValue::from(Tls13ClientSessionValue::new(
+        TLS13_AES_128_GCM_SHA256
+            .tls13()
+            .unwrap(),
         vec![],
         vec![1, 2, 3],
         vec![Certificate(b"abc".to_vec()), Certificate(b"def".to_vec())],
         TimeBase::now().unwrap(),
-    );
+        15,
+        10,
+        128,
+    ));
     println!("{:?}", csv);
 }
 
